@@ -74,8 +74,9 @@ public class LoginActivity extends AppCompatActivity implements LocationListener
                 Toast.makeText(getBaseContext(), "Location can't be retrieved", Toast.LENGTH_SHORT).show();
 
         }else{
-            Toast.makeText(getBaseContext(), "No Provider Found", Toast.LENGTH_SHORT).show();
-        }
+//
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},1);
+             }
     }
 
 
