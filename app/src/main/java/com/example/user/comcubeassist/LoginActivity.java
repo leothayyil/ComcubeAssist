@@ -31,6 +31,7 @@ public class LoginActivity extends AppCompatActivity implements LocationListener
     String currentLatitude, currentLongitude;
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,6 +49,8 @@ public class LoginActivity extends AppCompatActivity implements LocationListener
             @Override
             public void onClick(View view) {
 
+                String user=usename.getText().toString();
+                String passwor=password.getText().toString();
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                 startActivity(intent);
             }

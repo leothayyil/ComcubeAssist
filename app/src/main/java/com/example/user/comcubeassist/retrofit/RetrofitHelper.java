@@ -23,7 +23,7 @@ public class RetrofitHelper {
                 .writeTimeout(60,TimeUnit.SECONDS)
                 .readTimeout(60,TimeUnit.SECONDS).build();
         Retrofit rest=new Retrofit.Builder()
-                .baseUrl("http://shopknekt.tk/")
+                .baseUrl("http://comcubecochin.com/web-api/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(httpClient)
                 .build();
