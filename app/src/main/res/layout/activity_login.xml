@@ -44,7 +44,7 @@
                 android:layout_margin="15dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textEmailAddress"
+                android:inputType="textPassword"
                 android:background="@android:color/transparent"
                 android:hint="password"
                 android:text="comcube123"/>
@@ -57,5 +57,16 @@
             android:layout_marginTop="20dp"
             android:textColor="@android:color/white"/>
     </LinearLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="location disabled"
+        android:textSize="29dp"
+        android:gravity="center"
+        android:layout_marginTop="220dp"
+        android:textColor="@color/btn_blue"
+        android:id="@+id/noLocationTV"
+        android:visibility="gone"
+        />
 
 </RelativeLayout>
