@@ -21,6 +21,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.user.comcubeassist.network.InternetConnection;
 import com.example.user.comcubeassist.retrofit.RetrofitHelper;
 import com.google.gson.JsonElement;
 
@@ -54,7 +55,6 @@ public class LoginActivity extends AppCompatActivity implements LocationListener
     Bundle bundle;
     ProgressDialog progress;
 
-public  static List<String>logindet=new ArrayList<String>();
 
 
     @Override
@@ -71,6 +71,8 @@ public  static List<String>logindet=new ArrayList<String>();
         progress = new ProgressDialog(this);
         bundle=new Bundle();
 
+
+
         currentDateTimeString = DateFormat.getDateTimeInstance().format(new Date());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
@@ -79,38 +81,45 @@ public  static List<String>logindet=new ArrayList<String>();
             }
         }
 
+        if (InternetConnection.checkConnection(this)){
 
-        login.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+            login.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
 
-                progress.setTitle("Loading");
-                progress.setMessage("Wait while loading...");
-                progress.setCancelable(false);
+                    progress.setTitle("Loading");
+                    progress.setMessage("Wait while loading...");
+                    progress.setCancelable(false);
 
-                 Suser=usename.getText().toString();
-                 Spasswor=password.getText().toString();
-
-                Toast.makeText(LoginActivity.this, "You are logged in ", Toast.LENGTH_SHORT).show();
-                Intent intent=new Intent(LoginActivity.this,MainActivity.class);
-                startActivity(intent);
+                    Suser=usename.getText().toString();
+                    Spasswor=password.getText().toString();
 
 
-                if (currentLatitude==null
-                         ){
-                     Toast.makeText(LoginActivity.this, "Unable to fetch location", Toast.LENGTH_SHORT).show();
-                 }else {
-                     loginWeb(Suser,Spasswor,currentLatitude,currentLongitude);
-                     progress.show();
-                 }
+                    if (currentLatitude==null
+                            ){
+                        Toast.makeText(LoginActivity.this, "Unable to fetch location", Toast.LENGTH_SHORT).show();
+                    }else if (usename.getText().toString().isEmpty()){
+                        Toast.makeText(LoginActivity.this, "Enter your name", Toast.LENGTH_SHORT).show();
+                    }else if (password.getText().toString().isEmpty()){
+                        Toast.makeText(LoginActivity.this, "Password field is blank!", Toast.LENGTH_SHORT).show();
+                    }else {
+                        loginWeb(Suser,Spasswor,currentLatitude,currentLongitude);
+                        progress.show();
+                    }
 
 
-            }
-        });
+                }
+            });
+
+        }else {
+            Toast.makeText(this, "Enable your internet Connection", Toast.LENGTH_SHORT).show();
+        }
+
+
 
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
-        // Creating an empty criteria object
+
         Criteria criteria = new Criteria();
         provider = locationManager.getBestProvider(criteria, false);
 
@@ -131,7 +140,7 @@ public  static List<String>logindet=new ArrayList<String>();
                 Toast.makeText(getBaseContext(), "Location can't be retrieved", Toast.LENGTH_SHORT).show();
 
         }else{
-//
+
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},1);
              }
 
@@ -170,10 +179,8 @@ public  static List<String>logindet=new ArrayList<String>();
 
                          if (userId.isEmpty()){
 
-                             Toast.makeText(LoginActivity.this, "failed", Toast.LENGTH_SHORT).show();
+                             Toast.makeText(LoginActivity.this, "Check your login details!", Toast.LENGTH_SHORT).show();
                          }else {
-
-                             Toast.makeText(LoginActivity.this, "You are logged in ", Toast.LENGTH_SHORT).show();
                              Intent intent=new Intent(LoginActivity.this,MainActivity.class);
                              intent.putExtras(bundle);
                              startActivity(intent);
@@ -183,7 +190,7 @@ public  static List<String>logindet=new ArrayList<String>();
 
                     } catch (JSONException e) {
                         e.printStackTrace();
-                        Toast.makeText(LoginActivity.this, "Please Check Login Details", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(LoginActivity.this, "Please Check Login Details !", Toast.LENGTH_SHORT).show();
                     }
 
                 }
@@ -220,5 +227,7 @@ public  static List<String>logindet=new ArrayList<String>();
     public void onProviderDisabled(String s) {
 
     }
+
 }
+
 

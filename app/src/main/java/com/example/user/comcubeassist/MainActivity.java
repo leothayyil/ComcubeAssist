@@ -2,6 +2,7 @@ package com.example.user.comcubeassist;
 
 import android.*;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Criteria;
 import android.location.Location;
@@ -11,8 +12,12 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.util.Log;
+import android.view.MenuItem;
+import android.view.View;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -30,15 +35,16 @@ import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity implements LocationListener {
 
-    EditText feedback,shopName;
-    String shopStr,feedbackStr,userIds;
-    ImageView check;
-    String lat="50.7889";
-    String longi="68.99";
-    int user_id=2;
+    EditText feedback,shopName,phoneEdt;
+    String shopStr,feedbackStr,userIds,phoneS;
+    String lat;
+    String longi;
+
     LocationManager locationManager;
     String provider;
-    public Bundle getBundle = null;
+    Button updateBtn;
+    CardView update,finish;
+    Bundle bundle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,16 +55,83 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         feedback.setMaxLines(5);
         feedback.setSelected(true);
 
+         bundle = getIntent().getExtras();
+        if (bundle != null)
+        {
+            userIds=" "+bundle.getString("user_id");
 
-        getBundle = this.getIntent().getExtras();
-         userIds = getBundle.getString("user_id");
-        
+        }else {
+            userIds="";
+
+            Intent logIntent = new Intent(MainActivity.this, LoginActivity.class);
+            startActivity(logIntent);
+            finish();
+
+        }
+
 
         shopName=(EditText)findViewById(R.id.EdtShopNmae);
         feedback=(EditText)findViewById(R.id.EdtFeedback);
+        phoneEdt=(EditText)findViewById(R.id.EdtPhone);
 
-        shopStr=shopName.getText().toString();
-        feedbackStr=feedback.getText().toString();
+//        updateBtn=(Button)findViewById(R.id.submitBtnId);
+
+        update=(CardView)findViewById(R.id.cardUpdate);
+        finish=(CardView)findViewById(R.id.cardFinish);
+
+
+        update.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+                shopStr=shopName.getText().toString();
+                feedbackStr=feedback.getText().toString();
+                phoneS=phoneEdt.getText().toString();
+
+                if (shopName.getText().toString().isEmpty()){
+                    Toast.makeText(MainActivity.this, "Please enter the shop name", Toast.LENGTH_SHORT).show();
+
+                }else if (feedback.getText().toString().isEmpty()){
+                    Toast.makeText(MainActivity.this, "Field phone number is empty", Toast.LENGTH_SHORT).show();
+                }else if (feedback.getText().toString().isEmpty()){
+                    Toast.makeText(MainActivity.this, "What about feedback?", Toast.LENGTH_SHORT).show();
+                }else if (userIds=="") {
+                    Toast.makeText(MainActivity.this, "You need to login First", Toast.LENGTH_SHORT).show();
+//                    Intent logIntent = new Intent(MainActivity.this, LoginActivity.class);
+//                    startActivity(logIntent);
+                    finish();
+                }
+                else   updateFb(shopStr,phoneS,lat,longi,feedbackStr);
+
+
+            }
+        });
+        finish.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                String shop="LOGOUT";
+                String phonee="000";
+                String feedb="finished";
+
+                if (bundle!=null) {
+                    bundle.remove("user_id");
+                    bundle.clear();
+                }
+                updateFb(shop,phonee,lat,longi,feedb);
+                Toast.makeText(MainActivity.this, "You are Logged Out", Toast.LENGTH_SHORT).show();
+                Intent logIntent=new Intent(MainActivity.this,LoginActivity.class);
+                startActivity(logIntent);
+                finish();
+
+
+
+            }
+        });
+
+
+
 
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
@@ -88,19 +161,11 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         }
 
 
-//        updateFb(shopStr,feedbackStr);
-
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
-
-
-
-
 
     }
 
-    private void updateFb(String shopStr, String feedbackStr) {
-        new RetrofitHelper(MainActivity.this).getApIs().feedback(shopStr,user_id,lat,longi,feedbackStr)
+    private void updateFb(String shop, final String phone, String lat, String lon, String feedb) {
+        new RetrofitHelper(MainActivity.this).getApIs().feedback(shopStr,phone,userIds,lat,longi,feedbackStr)
                 .enqueue(new Callback<JsonElement>() {
                     @Override
                     public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
@@ -108,6 +173,23 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                         try {
                             JSONObject jsonObject=new JSONObject(response.body().toString());
                             String status=jsonObject.getString("status");
+                            String date_time=jsonObject.getString("dt_time");
+
+                            
+                            if (status=="Failed"){
+
+                                Toast.makeText(MainActivity.this, "Updating Failed", Toast.LENGTH_SHORT).show();
+
+                            }
+                            else {
+                                shopName.setText("");
+                                feedback.setText("");
+                                phoneEdt.setText("");
+
+
+                                Toast.makeText(MainActivity.this, "Success", Toast.LENGTH_SHORT).show();
+                            }
+
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -126,8 +208,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         lat= String.valueOf(location.getLatitude());
         longi=String.valueOf(location.getLongitude());
 
-        Toast.makeText(this, lat, Toast.LENGTH_SHORT).show();
-        Log.i("loggg", lat);
     }
 
     @Override

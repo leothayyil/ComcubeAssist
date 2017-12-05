@@ -24,7 +24,11 @@ public interface APIs {
             String password, @Query("pos_lat") String pos_lat, @Query("pos_long") String pos_long);
 
 
-    @POST("/web-api/insert_shop.php")
-    Call<JsonElement>feedback(@Body String shopName, @Body int user_id, @Body String pos_lat, @Body String pos_lon, @Body String feedback);
+
+    @FormUrlEncoded
+    @POST("/web-api/insert_shop.php?")
+
+    Call<JsonElement>feedback(@Field("shop_name") String shopName,@Field("phone")String phone, @Field("user_id") String user_id,
+                              @Field("pos_lat") String pos_lat, @Field("pos_long") String pos_lon, @Field("feedback") String feedback);
 
 }

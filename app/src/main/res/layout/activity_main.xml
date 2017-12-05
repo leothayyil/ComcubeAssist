@@ -4,15 +4,54 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:backgroundTint="#cfd5e6"
+    android:background="#fff"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.example.user.comcubeassist.MainActivity">
 
+    <android.support.v7.widget.CardView
+    android:layout_width="100dp"
+    android:layout_height="40dp"
+    app:cardCornerRadius="20dp"
+        app:cardElevation="10dp"
+        android:id="@+id/cardUpdate"
+    android:layout_marginTop="10dp"
+        app:cardBackgroundColor="#66bb6a"
+    android:layout_marginLeft="120dp">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="Update"
+        android:textColor="#fff"
+        android:id="@+id/updateTv"
+        android:gravity="center"
+        android:textSize="20dp"/>
+</android.support.v7.widget.CardView>
+    <android.support.v7.widget.CardView
+        android:layout_width="100dp"
+        app:cardElevation="10dp"
+        android:layout_height="40dp"
+        android:id="@+id/cardFinish"
+        app:cardBackgroundColor="#448aff"
+        android:layout_toRightOf="@+id/cardUpdate"
+        app:cardCornerRadius="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="30dp">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Finish"
+            android:textColor="#fff"
+            android:id="@+id/finishTv"
+            android:gravity="center"
+            android:textSize="20dp"/>
+    </android.support.v7.widget.CardView>
 <android.support.v7.widget.CardView
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="50dp"
+    android:layout_marginTop="70dp"
     android:layout_marginLeft="20dp"
+    android:layout_marginRight="20dp"
+    app:cardElevation="4dp"
     app:cardCornerRadius="20dp"
     app:cardBackgroundColor="#ffffff"
     android:id="@+id/shopnameCardId">
@@ -33,13 +72,44 @@
     </android.support.design.widget.TextInputLayout>
 </android.support.v7.widget.CardView>
 
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        app:cardElevation="4dp"
+        android:layout_below="@id/shopnameCardId"
+        app:cardCornerRadius="20dp"
+        app:cardBackgroundColor="#ffffff"
+        android:id="@+id/phoneCardId">
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/phoneInput"
+            >
+
+            <EditText
+                android:id="@+id/EdtPhone"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:background="@android:color/transparent"
+                android:hint="Phone Number"
+                android:inputType="phone"
+                android:textColor="#000000" />
+        </android.support.design.widget.TextInputLayout>
+    </android.support.v7.widget.CardView>
+
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
         app:cardCornerRadius="20dp"
+        app:cardElevation="4dp"
         app:cardBackgroundColor="#ffffff"
-        android:layout_below="@+id/shopnameCardId"
+        android:layout_below="@+id/phoneCardId"
         android:id="@+id/feedbackCardId">
 
     <android.support.design.widget.TextInputLayout
@@ -63,17 +133,6 @@
 
     </android.support.v7.widget.CardView>
 
-    <Button
-        android:id="@+id/submitBtnId"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/feedbackCardId"
-        android:layout_alignStart="@+id/feedbackCardId"
-        android:layout_below="@+id/feedbackCardId"
-        android:layout_marginTop="15dp"
-        android:background="#051066"
-        android:text="button"
-        android:textColor="#fff" />
 
 
 </RelativeLayout>
