@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import es.dmoral.toasty.Toasty;
 import io.paperdb.Paper;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -50,8 +51,8 @@ public class LoginActivity extends AppCompatActivity implements LocationListener
           String   Suser;
           String Spasswor;
 
-    String currentLatitude="50.7099";
-    String currentLongitude="5.075";
+    String currentLatitude;
+    String currentLongitude;
     Bundle bundle;
     ProgressDialog progress;
 
@@ -59,6 +60,10 @@ public class LoginActivity extends AppCompatActivity implements LocationListener
    static SharedPreferences.Editor editor;
 
 
+    @Override
+    public void onBackPressed() {
+        moveTaskToBack(true);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +81,8 @@ public class LoginActivity extends AppCompatActivity implements LocationListener
 
          preferences = getApplicationContext().getSharedPreferences("user_id_shared", MODE_PRIVATE);
         editor = preferences.edit();
+
+
 
 
 
@@ -103,27 +110,23 @@ public class LoginActivity extends AppCompatActivity implements LocationListener
 
                     if (currentLatitude==null
                             ){
-                        Toast.makeText(LoginActivity.this, "Unable to fetch location", Toast.LENGTH_SHORT).show();
+                        Toasty.error(LoginActivity.this, "Unable to fetch location", Toast.LENGTH_SHORT).show();
                         ActivityCompat.requestPermissions(LoginActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
 
                     }else if (usename.getText().toString().isEmpty()){
-                        Toast.makeText(LoginActivity.this, "Enter your name", Toast.LENGTH_SHORT).show();
+                        Toasty.warning(LoginActivity.this, "Enter your name", Toast.LENGTH_SHORT).show();
                     }else if (password.getText().toString().isEmpty()){
-                        Toast.makeText(LoginActivity.this, "Password field is blank!", Toast.LENGTH_SHORT).show();
+                        Toasty.warning(LoginActivity.this, "Password field is blank!", Toast.LENGTH_SHORT).show();
                     }else {
                         loginWeb(Suser,Spasswor,currentLatitude,currentLongitude);
                         progress.show();
                     }
-
-
                 }
             });
 
         }else {
-            Toast.makeText(this, "Enable your internet Connection", Toast.LENGTH_SHORT).show();
+            Toasty.warning(this, "Enable your internet Connection", Toast.LENGTH_SHORT).show();
         }
-
-
 
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
@@ -147,7 +150,7 @@ public class LoginActivity extends AppCompatActivity implements LocationListener
             if(location!=null)
                 onLocationChanged(location);
             else
-                Toast.makeText(getBaseContext(), "Location can't be retrieved", Toast.LENGTH_SHORT).show();
+                Toasty.error(getBaseContext(), "Location can't be retrieved", Toast.LENGTH_SHORT).show();
 
         }else{
 
@@ -159,14 +162,6 @@ public class LoginActivity extends AppCompatActivity implements LocationListener
 
     private void loginWeb(final String suser, String spasswor, String currentLatitude, String currentLongitude) {
 
-      if (suser.equals("")){
-            Toast.makeText(this, "Enter Your Name", Toast.LENGTH_SHORT).show();
-        }
-        else if (password.equals("")){
-            Toast.makeText(this, "Enter Your Password", Toast.LENGTH_SHORT).show();
-        }
-
-       else {
 
             new RetrofitHelper(LoginActivity.this).getApIs().
                     login(suser, spasswor, currentLatitude, currentLongitude).enqueue(new Callback<JsonElement>() {
@@ -181,42 +176,27 @@ public class LoginActivity extends AppCompatActivity implements LocationListener
                         String dateTime = jsonObject.getString("dt_time");
 
                         editor.putString("user_id_preff",userId);
-
-//                        bundle.putString("user_id",userId);
-
-
+                        editor.commit();
 
                         progress.dismiss();
-
-
-                         if (userId.isEmpty()){
-
-                             Toast.makeText(LoginActivity.this, "Check your login details!", Toast.LENGTH_SHORT).show();
+                        if (userId.isEmpty()){
+                            Toasty.warning(LoginActivity.this, "Check your login details!", Toast.LENGTH_SHORT).show();
                          }else {
+                            Toasty.success(getApplicationContext(),"Success",Toast.LENGTH_SHORT);
+
                              Intent intent=new Intent(LoginActivity.this,MainActivity.class);
-                             intent.putExtras(bundle);
                              startActivity(intent);
-
                          }
-
-
                     } catch (JSONException e) {
                         e.printStackTrace();
-                        Toast.makeText(LoginActivity.this, "Please Check Login Details !", Toast.LENGTH_SHORT).show();
-                    }
-
+                       }
                 }
-
                 @Override
                 public void onFailure(Call<JsonElement> call, Throwable t) {
 
                 }
             });
         }
-
-
-    }
-
     @Override
     public void onLocationChanged(Location location) {
 

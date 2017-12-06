@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Comcube Assist</string>
+    <string name="login">login</string>
+    <string name="password">password</string>
+    <string name="name">name</string>
+    <string name="location_disabled">location disabled</string>
 </resources>

@@ -14,8 +14,6 @@
         android:layout_marginLeft="10dp"
         android:orientation="vertical">
 
-
-
         <android.support.design.widget.TextInputLayout
             android:id="@+id/login_input_layout_email"
             android:layout_width="match_parent"
@@ -30,8 +28,8 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="15dp"
                 android:inputType="textEmailAddress"
-                android:hint="name"
-                android:text="mithun"/>
+                android:hint="@string/name"
+                />
         </android.support.design.widget.TextInputLayout>
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
@@ -45,14 +43,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textPassword"
-                android:text="comcube123"
                 android:background="@android:color/transparent"
-                android:hint="password"/>
+                android:hint="@string/password"/>
         </android.support.design.widget.TextInputLayout>
         <Button android:id="@+id/btn_login"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="login"
+            android:text="@string/login"
             android:background="@color/btn_blue"
             android:layout_marginTop="20dp"
             android:textColor="@android:color/white"/>
@@ -60,7 +57,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="location disabled"
+        android:text="@string/location_disabled"
         android:textSize="29dp"
         android:gravity="center"
         android:layout_marginTop="220dp"

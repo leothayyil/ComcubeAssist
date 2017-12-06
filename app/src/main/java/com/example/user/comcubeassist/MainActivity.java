@@ -9,7 +9,9 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.support.annotation.ColorInt;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -31,6 +33,7 @@ import com.google.gson.JsonElement;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import es.dmoral.toasty.Toasty;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -38,7 +41,10 @@ import retrofit2.Response;
 public class MainActivity extends AppCompatActivity implements LocationListener {
 
     EditText feedback,shopName,phoneEdt;
-    String shopStr,feedbackStr,userIds,phoneS;
+    String shopStr,feedbackStr,user_ids,phoneS;
+    String shopf="LOG OUT";
+    String phonee="000";
+    String feedbf="finished";
     String lat;
     String longi;
 
@@ -52,6 +58,11 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     SharedPreferences.Editor editor;
 
     @Override
+    public void onBackPressed() {
+        moveTaskToBack(true);
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -60,37 +71,31 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         feedback.setMaxLines(5);
         feedback.setSelected(true);
 
-        /*
-         bundle = getIntent().getExtras();
-        if (bundle != null)
-        {
-            userIds=" "+bundle.getString("user_id");
+        preferences = getApplicationContext().getSharedPreferences("user_id_shared", MODE_PRIVATE);
+        editor = preferences.edit();
 
-        }else {
-            userIds="";
+         user_ids=preferences.getString("user_id_preff", "0");
 
+        if (user_ids =="0"){
             Intent logIntent = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(logIntent);
-            finish();
+
         }
-        */
-
-        preferences = getApplicationContext().getSharedPreferences("user_id_shared", MODE_PRIVATE);
-//        editor = preferences.edit();
-
-
-        String user_id=preferences.getString("user_id_preff", null);
-
 
         shopName=(EditText)findViewById(R.id.EdtShopNmae);
         feedback=(EditText)findViewById(R.id.EdtFeedback);
         phoneEdt=(EditText)findViewById(R.id.EdtPhone);
-
-//        updateBtn=(Button)findViewById(R.id.submitBtnId);
-
         update=(CardView)findViewById(R.id.cardUpdate);
         finish=(CardView)findViewById(R.id.cardFinish);
 
+        Toasty.Config.getInstance()
+                .setErrorColor(ContextCompat.getColor(getApplicationContext(),R.color.colour3))
+    .setInfoColor(ContextCompat.getColor(getApplicationContext(),R.color.colour1))
+    .setSuccessColor(ContextCompat.getColor(getApplicationContext(),R.color.colour2))
+    .setWarningColor(ContextCompat.getColor(getApplicationContext(),R.color.colour4))
+    .setTextColor(ContextCompat.getColor(getApplicationContext(),R.color.colour5))
+    .tintIcon(true)
+    .apply();
 
         update.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -102,52 +107,34 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                 phoneS=phoneEdt.getText().toString();
 
                 if (shopName.getText().toString().isEmpty()){
-                    Toast.makeText(MainActivity.this, "Please enter the shop name", Toast.LENGTH_SHORT).show();
+                    Toasty.warning(MainActivity.this, "Please enter the shop name", Toast.LENGTH_SHORT, true).show();
+                }else if (phoneEdt.getText().toString().isEmpty()){
+                    Toasty.warning(MainActivity.this, "Field phone number is empty", Toast.LENGTH_SHORT, true).show();
+                }else if (feedback.getText().toString().isEmpty()){
+                    Toasty.warning(MainActivity.this, "What about feedback?", Toast.LENGTH_SHORT, true).show();
 
-                }else if (feedback.getText().toString().isEmpty()){
-                    Toast.makeText(MainActivity.this, "Field phone number is empty", Toast.LENGTH_SHORT).show();
-                }else if (feedback.getText().toString().isEmpty()){
-                    Toast.makeText(MainActivity.this, "What about feedback?", Toast.LENGTH_SHORT).show();
-                }else if (userIds=="") {
-                    Toast.makeText(MainActivity.this, "You need to login First", Toast.LENGTH_SHORT).show();
-//                    Intent logIntent = new Intent(MainActivity.this, LoginActivity.class);
-//                    startActivity(logIntent);
+                }else if (user_ids=="") {
+                    Toasty.warning(MainActivity.this, "You need to login First", Toast.LENGTH_SHORT, true).show();
                     finish();
                 }
-                else   updateFb(shopStr,phoneS,lat,longi,feedbackStr);
-
-
+                else   updateFb(shopStr,phoneS,user_ids,lat,longi,feedbackStr);
             }
         });
-        finish.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
-                String shop="LOGOUT";
-                String phonee="000";
-                String feedb="finished";
-
-                if (bundle!=null) {
-                    bundle.remove("user_id");
-                    bundle.clear();
+            finish.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    editor.clear();
+                    editor.commit();
+                    updateFb(shopf,phonee,user_ids,lat,longi,feedbf);
+                    Intent logIntent=new Intent(MainActivity.this,LoginActivity.class);
+                    startActivity(logIntent);
+                    finish();
                 }
-                updateFb(shop,phonee,lat,longi,feedb);
-                Toast.makeText(MainActivity.this, "You are Logged Out", Toast.LENGTH_SHORT).show();
-                Intent logIntent=new Intent(MainActivity.this,LoginActivity.class);
-                startActivity(logIntent);
-                finish();
-
-
-
-            }
-        });
-
-
-
+            });
 
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
-        // Creating an empty criteria object
         Criteria criteria = new Criteria();
         provider = locationManager.getBestProvider(criteria, false);
 
@@ -165,33 +152,25 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             if(location!=null)
                 onLocationChanged(location);
             else
-                Toast.makeText(getBaseContext(), "Location can't be retrieved", Toast.LENGTH_SHORT).show();
-
+                Toasty.error(getBaseContext(), "Location can't be retrieved", Toast.LENGTH_SHORT).show();
         }else{
-//
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},1);
         }
-
-
-
     }
-
-    private void updateFb(String shop, final String phone, String lat, String lon, String feedb) {
-        new RetrofitHelper(MainActivity.this).getApIs().feedback(shopStr,phone,userIds,lat,longi,feedbackStr)
-                .enqueue(new Callback<JsonElement>() {
+    private void updateFb(final String shop, final String phone,final String user_ids,final String lat, String lon,final String feedb) {
+        Log.i("TAG", shop+","+phone+","+user_ids+","+lat+","+lon+","+feedb);
+        new RetrofitHelper(MainActivity.this).getApIs().feedback(shop,phone,user_ids,lat,lon,feedb)
+                .enqueue(new Callback<JsonElement>()
+                {
                     @Override
                     public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
-
+                        Log.i("TAG", String.valueOf(response));
                         try {
                             JSONObject jsonObject=new JSONObject(response.body().toString());
                             String status=jsonObject.getString("status");
                             String date_time=jsonObject.getString("dt_time");
-
-                            
                             if (status=="Failed"){
-
-                                Toast.makeText(MainActivity.this, "Updating Failed", Toast.LENGTH_SHORT).show();
-
+                                Toasty.error(MainActivity.this, "Updating Failed", Toast.LENGTH_SHORT).show();
                             }
                             else {
                                 shopName.setText("");
@@ -199,9 +178,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                                 phoneEdt.setText("");
                                 InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
                                 imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
-
-
-                                Toast.makeText(MainActivity.this, "Success", Toast.LENGTH_SHORT).show();
+                                Toasty.success(MainActivity.this, "Success", Toast.LENGTH_SHORT).show();
                             }
 
                         } catch (JSONException e) {
@@ -237,5 +214,11 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     @Override
     public void onProviderDisabled(String provider) {
 
+    }
+
+    @Override
+    protected void onDestroy() {
+
+        super.onDestroy();
     }
 }
