@@ -50,10 +50,13 @@ public class LoginActivity extends AppCompatActivity implements LocationListener
           String   Suser;
           String Spasswor;
 
-    String currentLatitude;
-    String currentLongitude;
+    String currentLatitude="50.7099";
+    String currentLongitude="5.075";
     Bundle bundle;
     ProgressDialog progress;
+
+   static SharedPreferences preferences;
+   static SharedPreferences.Editor editor;
 
 
 
@@ -70,6 +73,9 @@ public class LoginActivity extends AppCompatActivity implements LocationListener
 
         progress = new ProgressDialog(this);
         bundle=new Bundle();
+
+         preferences = getApplicationContext().getSharedPreferences("user_id_shared", MODE_PRIVATE);
+        editor = preferences.edit();
 
 
 
@@ -98,6 +104,8 @@ public class LoginActivity extends AppCompatActivity implements LocationListener
                     if (currentLatitude==null
                             ){
                         Toast.makeText(LoginActivity.this, "Unable to fetch location", Toast.LENGTH_SHORT).show();
+                        ActivityCompat.requestPermissions(LoginActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+
                     }else if (usename.getText().toString().isEmpty()){
                         Toast.makeText(LoginActivity.this, "Enter your name", Toast.LENGTH_SHORT).show();
                     }else if (password.getText().toString().isEmpty()){
@@ -132,7 +140,9 @@ public class LoginActivity extends AppCompatActivity implements LocationListener
             }
             Location location = locationManager.getLastKnownLocation(provider);
 
-            locationManager.requestLocationUpdates(provider, 20000, 1, this);
+            locationManager.requestLocationUpdates(provider, 100, 1, this);
+
+
 
             if(location!=null)
                 onLocationChanged(location);
@@ -170,7 +180,9 @@ public class LoginActivity extends AppCompatActivity implements LocationListener
                         userId = jsonObject.getString("user_id");
                         String dateTime = jsonObject.getString("dt_time");
 
-                        bundle.putString("user_id",userId);
+                        editor.putString("user_id_preff",userId);
+
+//                        bundle.putString("user_id",userId);
 
 
 

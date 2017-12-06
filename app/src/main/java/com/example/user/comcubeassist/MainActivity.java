@@ -3,6 +3,7 @@ package com.example.user.comcubeassist;
 import android.*;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Criteria;
 import android.location.Location;
@@ -17,6 +18,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -46,6 +48,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     CardView update,finish;
     Bundle bundle;
 
+    SharedPreferences preferences;
+    SharedPreferences.Editor editor;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,6 +60,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         feedback.setMaxLines(5);
         feedback.setSelected(true);
 
+        /*
          bundle = getIntent().getExtras();
         if (bundle != null)
         {
@@ -66,8 +72,14 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             Intent logIntent = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(logIntent);
             finish();
-
         }
+        */
+
+        preferences = getApplicationContext().getSharedPreferences("user_id_shared", MODE_PRIVATE);
+//        editor = preferences.edit();
+
+
+        String user_id=preferences.getString("user_id_preff", null);
 
 
         shopName=(EditText)findViewById(R.id.EdtShopNmae);
@@ -185,6 +197,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                                 shopName.setText("");
                                 feedback.setText("");
                                 phoneEdt.setText("");
+                                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                                imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
 
 
                                 Toast.makeText(MainActivity.this, "Success", Toast.LENGTH_SHORT).show();

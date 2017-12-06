@@ -29,9 +29,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="15dp"
-                android:text="mithun"
                 android:inputType="textEmailAddress"
-                android:hint="name" />
+                android:hint="name"
+                android:text="mithun"/>
         </android.support.design.widget.TextInputLayout>
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
@@ -45,9 +45,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textPassword"
+                android:text="comcube123"
                 android:background="@android:color/transparent"
-                android:hint="password"
-                android:text="comcube123"/>
+                android:hint="password"/>
         </android.support.design.widget.TextInputLayout>
         <Button android:id="@+id/btn_login"
             android:layout_width="fill_parent"
