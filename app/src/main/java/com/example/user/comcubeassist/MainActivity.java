@@ -50,9 +50,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
     LocationManager locationManager;
     String provider;
-    Button updateBtn;
     CardView update,finish;
-    Bundle bundle;
 
     SharedPreferences preferences;
     SharedPreferences.Editor editor;
@@ -82,11 +80,10 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
         }
 
-        shopName=(EditText)findViewById(R.id.EdtShopNmae);
-        feedback=(EditText)findViewById(R.id.EdtFeedback);
-        phoneEdt=(EditText)findViewById(R.id.EdtPhone);
-        update=(CardView)findViewById(R.id.cardUpdate);
-        finish=(CardView)findViewById(R.id.cardFinish);
+        shopName=findViewById(R.id.EdtShopNmae);
+        phoneEdt=findViewById(R.id.EdtPhone);
+        update=findViewById(R.id.cardUpdate);
+        finish=findViewById(R.id.cardFinish);
 
         Toasty.Config.getInstance()
                 .setErrorColor(ContextCompat.getColor(getApplicationContext(),R.color.colour3))
@@ -124,9 +121,10 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             finish.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    editor.clear();
-                    editor.commit();
+
                     updateFb(shopf,phonee,user_ids,lat,longi,feedbf);
+                    editor.remove("user_id_preff");
+                    editor.clear();
                     Intent logIntent=new Intent(MainActivity.this,LoginActivity.class);
                     startActivity(logIntent);
                     finish();
@@ -158,13 +156,13 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         }
     }
     private void updateFb(final String shop, final String phone,final String user_ids,final String lat, String lon,final String feedb) {
-        Log.i("TAG", shop+","+phone+","+user_ids+","+lat+","+lon+","+feedb);
+
         new RetrofitHelper(MainActivity.this).getApIs().feedback(shop,phone,user_ids,lat,lon,feedb)
                 .enqueue(new Callback<JsonElement>()
                 {
                     @Override
                     public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
-                        Log.i("TAG", String.valueOf(response));
+
                         try {
                             JSONObject jsonObject=new JSONObject(response.body().toString());
                             String status=jsonObject.getString("status");

@@ -3,6 +3,7 @@ package com.example.user.comcubeassist.retrofit;
 import android.content.Context;
 
 import com.example.user.comcubeassist.LoginActivity;
+import com.example.user.comcubeassist.MainActivity;
 
 import java.util.concurrent.TimeUnit;
 
@@ -10,19 +11,15 @@ import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-/**
- * Created by USER on 02-12-2017.
- */
-
 public class RetrofitHelper {
 
-    Context context;
-    static APIs apIs;
+     private   Context context;
+   private static APIs apIs;
 
-
-    public RetrofitHelper(Context context) {
-        this.context = context;
+    public RetrofitHelper(MainActivity mainActivity){
+        initRestAdapter();
     }
+
 
     public Context getContext() {
         return context;
@@ -36,7 +33,7 @@ public class RetrofitHelper {
         return apIs;
     }
 
-    public static void setApIs(APIs apIs) {
+    private static void setApIs(APIs apIs) {
         RetrofitHelper.apIs = apIs;
     }
 
