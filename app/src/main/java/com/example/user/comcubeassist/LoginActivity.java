@@ -175,7 +175,7 @@ public class LoginActivity extends AppCompatActivity implements LocationListener
                         userId = jsonObject.getString("user_id");
                         String dateTime = jsonObject.getString("dt_time");
 
-                        editor.putString("user_id_preff",userId);
+                        editor.putString("user_id",userId);
                         editor.commit();
 
                         progress.dismiss();

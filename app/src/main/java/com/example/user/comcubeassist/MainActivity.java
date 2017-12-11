@@ -9,6 +9,7 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Handler;
 import android.support.annotation.ColorInt;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -47,6 +48,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     String feedbf="finished";
     String lat;
     String longi;
+    final int intervalTime=10000;
 
     LocationManager locationManager;
     String provider;
@@ -54,6 +56,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
     SharedPreferences preferences;
     SharedPreferences.Editor editor;
+
 
     @Override
     public void onBackPressed() {
@@ -68,6 +71,42 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         feedback=(EditText)findViewById(R.id.EdtFeedback);
         feedback.setMaxLines(5);
         feedback.setSelected(true);
+
+        //delay at particular time
+/*
+        Handler handler=new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(MainActivity.this, "Fine", Toast.LENGTH_SHORT).show();
+                Log.i("TAG", "Fine");
+            }
+        },intervalTime);
+*/
+//Repeat at regular time
+        /*
+        Thread t=new Thread(){
+            @Override
+            public void run() {
+
+                try {
+                    while ( !isInterrupted()){
+                        Thread.sleep(10000);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(MainActivity.this, "OKK", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                super.run();
+            }
+        };
+        t.start();
+        */
 
         preferences = getApplicationContext().getSharedPreferences("user_id_shared", MODE_PRIVATE);
         editor = preferences.edit();
@@ -118,6 +157,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             }
         });
 
+
+
             finish.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -145,7 +186,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             }
             Location location = locationManager.getLastKnownLocation(provider);
 
-            locationManager.requestLocationUpdates(provider, 20000, 1, this);
+            locationManager.requestLocationUpdates(provider, 1000, 1, this);
 
             if(location!=null)
                 onLocationChanged(location);

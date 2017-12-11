@@ -42,15 +42,15 @@ public class RetrofitHelper {
     }
 
     private  void  initRestAdapter(){
-
-        OkHttpClient httpClient= new OkHttpClient.Builder()
-                .connectTimeout(60, TimeUnit.SECONDS)
-                .writeTimeout(60,TimeUnit.SECONDS)
-                .readTimeout(60,TimeUnit.SECONDS).build();
+//
+//        OkHttpClient httpClient= new OkHttpClient.Builder()
+//                .connectTimeout(60, TimeUnit.SECONDS)
+//                .writeTimeout(60,TimeUnit.SECONDS)
+//                .readTimeout(60,TimeUnit.SECONDS).build();
         Retrofit rest=new Retrofit.Builder()
                 .baseUrl("http://comcubecochin.com/")
                 .addConverterFactory(GsonConverterFactory.create())
-                .client(httpClient)
+//                .client(httpClient)
                 .build();
 
         setApIs(rest.create(APIs.class));
