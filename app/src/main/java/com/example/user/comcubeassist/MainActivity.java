@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         },intervalTime);
 */
 //Repeat at regular time
-        /*
+//        /*
         Thread t=new Thread(){
             @Override
             public void run() {
@@ -106,7 +106,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             }
         };
         t.start();
-        */
+//        */
 
         preferences = getApplicationContext().getSharedPreferences("user_id_shared", MODE_PRIVATE);
         editor = preferences.edit();
